@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Chatbot Fit & Sweet</title>
+<style>
+  /* Botón flotante */
+  #chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 9999;
+  }
+
+  /* Contenedor del chat */
+  #chatbot-container {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 320px;
+    max-height: 450px;
+    background-color: #fffaf0; /* beige claro */
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: none;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    z-index: 9999;
+  }
+
+  #chatbot-header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  #chatbot-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 14px;
+  }
+
+  .message {
+    margin: 5px 0;
+  }
+
+  .bot {
+    color: #4CAF50;
+    font-weight: bold;
+  }
+
+  .user {
+    color: #333;
+    font-weight: bold;
+  }
+
+  #chatbot-input-area {
+    display: flex;
+    border-top: 1px solid #ddd;
+    padding: 5px;
+  }
+
+  #chatbot-input {
+    flex: 1;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  #chatbot-send {
+    background-color: #8B4513; /* marrón chocolate */
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    margin-left: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<!-- Botón flotante -->
+<button id="chatbot-button">💬</button>
+
+<!-- Contenedor del chat -->
+<div id="chatbot-container">
+  <div id="chatbot-header">Fit & Sweet 🍪</div>
+  <div id="chatbot-messages"></div>
+  <div id="chatbot-input-area">
+    <input type="text" id="chatbot-input" placeholder="Escribe aquí...">
+    <button id="chatbot-send">Enviar</button>
+  </div>
+</div>
+
+<script>
+  const chatbotButton = document.getElementById("chatbot-button");
+  const chatbotContainer = document.getElementById("chatbot-container");
+  const chatbotMessages = document.getElementById("chatbot-messages");
+  const chatbotInput = document.getElementById("chatbot-input");
+  const chatbotSend = document.getElementById("chatbot-send");
+
+  const preguntas = [
+    "¡Hola! 🍪 Bienvenido a Fit & Sweet. ¿Cuántas calorías quiere consumir hoy?",
+    "Hola 👋, ¿qué se te antoja hoy para consentirte de forma saludable?",
+    "Bienvenido a Fit & Sweet 💚, ¿prefieres un postre más crujiente o suave?",
+    "¡Hola! 🌱 ¿Buscas algo sin azúcar o bajo en carbohidratos?",
+    "Bienvenido 🍪, ¿quieres que te recomiende nuestras galletas más vendidas?"
+  ];
+
+  function mensajeInicial() {
+    const preguntaAleatoria = preguntas[Math.floor(Math.random() * preguntas.length)];
+    chatbotMessages.innerHTML += `<div class="message bot">Bot: ${preguntaAleatoria}</div>`;
+  }
+
+  // Mostrar/ocultar chatbot
+  chatbotButton.addEventListener("click", () => {
+    if (chatbotContainer.style.display === "none") {
+      chatbotContainer.style.display = "flex";
+      if (chatbotMessages.innerHTML.trim() === "") {
+        mensajeInicial();
+      }
+    } else {
+      chatbotContainer.style.display = "none";
+    }
+  });
+
+  function sendMessage() {
+    let message = chatbotInput.value.trim();
+    if (!message) return;
+
+    chatbotMessages.innerHTML += `<div class="message user">Tú: ${message}</div>`;
+
+    let respuesta = "";
+
+    if (message.includes("calorías") || !isNaN(message)) {
+      respuesta = "Perfecto 🍪 Tenemos galletas desde 80 a 150 calorías. ¿Prefieres avena, chocolate o frutos secos?";
+    } else if (message.toLowerCase().includes("chocolate")) {
+      respuesta = "Tenemos galletas de cacao puro sin azúcar, ¡perfectas para ti! 🍫";
+    } else if (message.toLowerCase().includes("avena")) {
+      respuesta = "Nuestras galletas de avena y miel son suaves, dulces y saludables 🥰";
+    } else if (message.toLowerCase().includes("frutos secos")) {
+      respuesta = "Contamos con galletas con almendras, nueces y semillas 🌰";
+    } else if (message.toLowerCase().includes("sin azúcar")) {
+      respuesta = "Perfecto 💚, tenemos opciones endulzadas naturalmente sin azúcar añadida.";
+    } else {
+      respuesta = "Entendido 😋, puedo sugerirte opciones personalizadas según tu antojo.";
+    }
+
+    setTimeout(() => {
+      chatbotMessages.innerHTML += `<div class="message bot">Bot: ${respuesta}</div>`;
+      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }, 500);
+
+    chatbotInput.value = "";
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+  }
+
+  chatbotSend.addEventListener("click", sendMessage);
+  chatbotInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
+  });
+</script>
+
+</body>
+</html>
